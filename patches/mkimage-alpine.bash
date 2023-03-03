@@ -9,12 +9,12 @@ if [[ ${TARGETARCH}${TARGETVARIANT} == amd64 ]]; then
     declare arch=x86_64
 elif [[ ${TARGETARCH}${TARGETVARIANT} == arm64 ]]; then
     declare arch=aarch64
-elif [[ ${TARGETARCH}${TARGETVARIANT} == arm7 ]]; then
+elif [[ ${TARGETARCH}${TARGETVARIANT} == armv7 ]]; then
     declare arch=armv7
 fi
 
 declare REL="${REL:-edge}"
-declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine/}"
+declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine}"
 
 set -eo pipefail; [[ "$TRACE" ]] && set -x
 
