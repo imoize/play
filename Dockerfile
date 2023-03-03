@@ -19,7 +19,8 @@ RUN \
     patch \
     tar \
     tzdata \
-    xz
+    xz && \
+    arch
 
 # fetch builder script from gliderlabs
 COPY patches/mkimage-alpine.bash /
