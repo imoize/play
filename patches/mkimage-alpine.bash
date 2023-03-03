@@ -15,7 +15,7 @@ elif [[ $arch == armv7 ]]; then
     arch=armv7
 fi
 
-declare REL="${REL:-edge}"
+declare REL="${REL:-3.17}"
 declare MIRROR="${MIRROR:-http://nl.alpinelinux.org/alpine}"
 
 set -eo pipefail; [[ "$TRACE" ]] && set -x
