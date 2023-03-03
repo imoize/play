@@ -4,16 +4,18 @@
 # https://github.com/docker/docker/blob/master/contrib/mkimage-alpine.sh.
 # Changes were inspired by work done by Eivind Uggedal (uggedal) and
 # Luis Lavena (luislavena).
-arch=${TARGETARCH}${TARGETVARIANT}
-if [[ $arch == amd64 ]]; then
+
+if [[ ${TARGETARCH}${TARGETVARIANT} == amd64 ]]; then
     arch=x86_64
-elif [[ $arch == arm ]]; then
-    arch=armhf
-elif [[ $arch == arm64 ]]; then
+elif [[ ${TARGETARCH}${TARGETVARIANT} == armv7 ]]; then
+    arch=armv7
+elif [[ ${TARGETARCH}${TARGETVARIANT} == arm64 ]]; then
     arch=aarch64
+elif [[ ${TARGETARCH}${TARGETVARIANT} == armv6 ]]; then
+    arch=armhf
 fi
 
-declare REL="${REL:-v3.17}"
+declare REL="${REL:-edge}"
 declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine/}"
 
 set -eo pipefail; [[ "$TRACE" ]] && set -x
