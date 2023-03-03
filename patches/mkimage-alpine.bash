@@ -5,15 +5,7 @@
 # Changes were inspired by work done by Eivind Uggedal (uggedal) and
 # Luis Lavena (luislavena).
 
-if [[ ${TARGETARCH}${TARGETVARIANT} == amd64 ]]; then
-    declare arch=x86_64
-elif [[ ${TARGETARCH}${TARGETVARIANT} == arm64 ]]; then
-    declare arch=aarch64
-elif [[ $arch == armv7l ]]; then
-    declare arch=armv7
-elif [[ $arch == arm ]]; then
-    declare arch=armhf
-fi
+ARCH=${ARCH:-$(uname -m)}
 
 declare REL="${REL:-edge}"
 declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine/}"
