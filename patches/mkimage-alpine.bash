@@ -11,12 +11,10 @@ elif [[ $arch == arm ]]; then
     arch=armhf
 elif [[ $arch == arm64 ]]; then
     arch=aarch64
-elif [[ $arch == armv7 ]]; then
-    arch=armhf
 fi
 
 declare REL="${REL:-3.17}"
-declare MIRROR="${MIRROR:-http://nl.alpinelinux.org/alpine}"
+declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine/}"
 
 set -eo pipefail; [[ "$TRACE" ]] && set -x
 
