@@ -1,6 +1,7 @@
 FROM alpine:3.17 as build-stage
 
 ARG TARGETARCH
+ENV REL=v3.17
 
 #set packages for rootfs build
 ENV PACKAGES=alpine-baselayout,\
