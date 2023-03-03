@@ -13,7 +13,7 @@ elif [[ $arch == arm64 ]]; then
     arch=aarch64
 fi
 
-declare REL="${REL:-3.17}"
+declare REL="${REL:-v3.17}"
 declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine/}"
 
 set -eo pipefail; [[ "$TRACE" ]] && set -x
