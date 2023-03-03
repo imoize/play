@@ -1,5 +1,6 @@
-FROM alpine:3.17 as arch-base
+FROM alpine:${ALPINE_VERSION} as build-stage
 
+ARG ALPINE_VERSION=3.17
 ARG TARGETARCH
 
 #set packages for rootfs build
@@ -32,20 +33,20 @@ RUN \
     sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 # build images per arch 
-FROM alpine:3.17 AS base-amd64
+FROM alpine:${ALPINE_VERSION} AS base-amd64
 ARG S6_OVERLAY_ARCH=x86_64
-COPY --from=arch-base /build-out/ /
+COPY --from=build-stage /build-out/ /
 
-FROM alpine:3.17 AS base-arm64
+FROM alpine:${ALPINE_VERSION} AS base-arm64
 ARG S6_OVERLAY_ARCH=aarch64
-COPY --from=arch-base /build-out/ /
+COPY --from=build-stage /build-out/ /
 
-FROM alpine:3.17 AS base-armv7
+FROM alpine:${ALPINE_VERSION} AS base-armv7
 ARG S6_OVERLAY_ARCH=armhf
-COPY --from=arch-base /build-out/ /
+COPY --from=build-stage /build-out/ /
 
-# bake-stage
-FROM base-${TARGETARCH}${TARGETVARIANT} as bake-stage
+# s6-stage
+FROM base-${TARGETARCH}${TARGETVARIANT} as s6-stage
 
 # set version for s6 overlay
 ARG S6_OVERLAY_VERSION="3.1.4.1"
@@ -58,7 +59,7 @@ RUN tar -C /build-out -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz
 
 # runtime stage
 FROM scratch
-COPY --from=bake-stage /build-out/ /
+COPY --from=s6-stage /build-out/ /
 
 LABEL maintainer="brilliant"
 
