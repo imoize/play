@@ -83,7 +83,7 @@ RUN \
     usermod -G users disty && \
     mkdir -p \
     /app \
-    /data \
+    /config \
     /defaults && \
     echo "**** cleanup ****" && \
     rm -rf \
