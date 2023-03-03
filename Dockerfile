@@ -11,7 +11,9 @@ RUN \
     patch \
     tar \
     tzdata \
-    xz
+    xz && \
+    echo "I'm building for $TARGETARCH/$TARGETVARIANT" && \
+    echo "I'm building for $TARGETARCH$TARGETVARIANT"
 
 # build images per arch 
 FROM build-stage AS base-amd64
