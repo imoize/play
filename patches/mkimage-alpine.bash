@@ -4,13 +4,15 @@
 # https://github.com/docker/docker/blob/master/contrib/mkimage-alpine.sh.
 # Changes were inspired by work done by Eivind Uggedal (uggedal) and
 # Luis Lavena (luislavena).
-arch=${TARGETARCH}${TARGETVARIANT}
+
 if [[ $arch == amd64 ]]; then
     arch=x86_64
-elif [[ $arch == arm* ]]; then
+elif [[ $arch == armv7 ]]; then
     arch=armv7
 elif [[ $arch == arm64 ]]; then
     arch=aarch64
+elif [[ $arch == armv6 ]]; then
+    arch=armhf
 fi
 
 declare REL="${REL:-edge}"
