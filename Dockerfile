@@ -1,6 +1,5 @@
-FROM alpine:${ALPINE_VERSION} as build-stage
+FROM alpine:3.17 as build-stage
 
-ARG ALPINE_VERSION="3.17"
 ARG TARGETARCH
 
 #set packages for rootfs build
@@ -33,16 +32,16 @@ RUN \
     sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 # build images per arch 
-FROM alpine:${ALPINE_VERSION} AS base-amd64
-ARG S6_OVERLAY_ARCH=x86_64
+FROM alpine:3.17 AS base-amd64
+ARG S6_OVERLAY_ARCH="x86_64"
 COPY --from=build-stage /build-out/ /
 
-FROM alpine:${ALPINE_VERSION} AS base-arm64
-ARG S6_OVERLAY_ARCH=aarch64
+FROM alpine:3.17 AS base-arm64
+ARG S6_OVERLAY_ARCH="aarch64"
 COPY --from=build-stage /build-out/ /
 
-FROM alpine:${ALPINE_VERSION} AS base-armv7
-ARG S6_OVERLAY_ARCH=armhf
+FROM alpine:3.17 AS base-armv7
+ARG S6_OVERLAY_ARCH="armhf"
 COPY --from=build-stage /build-out/ /
 
 # s6-stage
