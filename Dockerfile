@@ -1,15 +1,7 @@
 FROM alpine:3.17 as build-stage
 
 ARG TARGETARCH
-ENV REL=v3.17
-
-#set packages for rootfs build
-ENV PACKAGES=alpine-baselayout,\
-alpine-keys,\
-apk-tools,\
-busybox,\
-libc-utils,\
-xz
+ARG ALPINE_VERSION="v3.17"
 
 # add required packages
 RUN \
@@ -19,8 +11,7 @@ RUN \
     patch \
     tar \
     tzdata \
-    xz && \
-    arch
+    xz
 
 # fetch builder script from gliderlabs
 COPY patches/mkimage-alpine.bash /
@@ -35,20 +26,62 @@ RUN \
 
 # build images per arch 
 FROM build-stage AS base-amd64
-RUN arch
+
 ARG S6_OVERLAY_ARCH="x86_64"
+# fetch builder script from gliderlabs
+COPY patches/mkimage-alpine.bash /
+RUN \
+    chmod +x /mkimage-alpine.bash && \
+    ./mkimage-alpine.bash && \
+    mkdir /build-out && \
+    tar xf \
+    /rootfs.tar.xz -C \
+    /build-out && \
+    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 FROM build-stage AS base-arm64
-RUN arch
+
 ARG S6_OVERLAY_ARCH="aarch64"
+# fetch builder script from gliderlabs
+COPY patches/mkimage-alpine.bash /
+RUN \
+    chmod +x /mkimage-alpine.bash && \
+    ./mkimage-alpine.bash && \
+    mkdir /build-out && \
+    tar xf \
+    /rootfs.tar.xz -C \
+    /build-out && \
+    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
+
 
 FROM build-stage AS base-armv7
-RUN arch
+
 ARG S6_OVERLAY_ARCH="armhf"
+# fetch builder script from gliderlabs
+COPY patches/mkimage-alpine.bash /
+RUN \
+    chmod +x /mkimage-alpine.bash && \
+    ./mkimage-alpine.bash && \
+    mkdir /build-out && \
+    tar xf \
+    /rootfs.tar.xz -C \
+    /build-out && \
+    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 FROM build-stage AS base-armv6
-RUN arch
+
 ARG S6_OVERLAY_ARCH="arm"
+# fetch builder script from gliderlabs
+COPY patches/mkimage-alpine.bash /
+RUN \
+    chmod +x /mkimage-alpine.bash && \
+    ./mkimage-alpine.bash && \
+    mkdir /build-out && \
+    tar xf \
+    /rootfs.tar.xz -C \
+    /build-out && \
+    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
+
 # s6-stage
 FROM base-${TARGETARCH}${TARGETVARIANT} as s6-stage
 
