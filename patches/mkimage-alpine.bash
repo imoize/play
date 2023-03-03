@@ -5,12 +5,14 @@
 # Changes were inspired by work done by Eivind Uggedal (uggedal) and
 # Luis Lavena (luislavena).
 
-if [[ ${TARGETARCH}${TARGETVARIANT} == amd64 ]]; then
+if [[ ${S6_OVERLAY_ARCH} == x86_64 ]]; then
     declare arch=x86_64
-elif [[ ${TARGETARCH}${TARGETVARIANT} == arm64 ]]; then
+elif [[ ${S6_OVERLAY_ARCH} == aarch64 ]]; then
     declare arch=aarch64
-elif [[ ${TARGETARCH}${TARGETVARIANT} == armv7 ]]; then
+elif [[ ${S6_OVERLAY_ARCH} == armhf ]]; then
     declare arch=armv7
+elif [[ ${S6_OVERLAY_ARCH} == arm ]]; then
+    declare arch=armhf
 fi
 
 declare REL="${REL:-edge}"
