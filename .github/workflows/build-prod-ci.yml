@@ -51,10 +51,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4.3.0
         with:
+          flavor: latest=true
           images: |
             ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}
             ${{ github.actor }}/${{ env.DEV_IMAGE }}
-          flavor: latest=true
+          labels: |
+            maintainer=Imoize
+            org.opencontainers.image.vendor=Imoize
           tags: |
             type=ref,event=tag
 
