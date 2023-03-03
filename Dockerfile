@@ -35,15 +35,15 @@ RUN \
 # build images per arch 
 FROM alpine:${ALPINE_VERSION} AS base-amd64
 ARG S6_OVERLAY_ARCH=x86_64
-COPY --from=s6-stage /build-out/ /
+COPY --from=build-stage /build-out/ /
 
 FROM alpine:${ALPINE_VERSION} AS base-arm64
 ARG S6_OVERLAY_ARCH=aarch64
-COPY --from=s6-stage /build-out/ /
+COPY --from=build-stage /build-out/ /
 
 FROM alpine:${ALPINE_VERSION} AS base-armv7
 ARG S6_OVERLAY_ARCH=armhf
-COPY --from=s6-stage /build-out/ /
+COPY --from=build-stage /build-out/ /
 
 # s6-stage
 FROM base-${TARGETARCH}${TARGETVARIANT} as s6-stage
