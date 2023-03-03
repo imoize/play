@@ -33,19 +33,19 @@ RUN \
 
 # build images per arch 
 FROM build-stage AS base-amd64
-RUN echo arch="{arch}"
+RUN arch
 ARG S6_OVERLAY_ARCH="x86_64"
 
 FROM build-stage AS base-arm64
-RUN echo arch="{arch}"
+RUN arch
 ARG S6_OVERLAY_ARCH="aarch64"
 
 FROM build-stage AS base-armv7
-RUN echo arch="{arch}"
+RUN arch
 ARG S6_OVERLAY_ARCH="armhf"
 
 FROM build-stage AS base-armv6
-RUN echo arch="{arch}"
+RUN arch
 ARG S6_OVERLAY_ARCH="arm"
 # s6-stage
 FROM base-${TARGETARCH}${TARGETVARIANT} as s6-stage
