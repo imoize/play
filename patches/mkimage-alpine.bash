@@ -6,13 +6,13 @@
 # Luis Lavena (luislavena).
 
 if [[ $arch == amd64 ]]; then
-    arch=x86_64
+    $ARCH="x86_64"
 elif [[ $arch == armv7 ]]; then
-    arch=armv7
+    $ARCH="armv7"
 elif [[ $arch == arm64 ]]; then
-    arch=aarch64
+    $ARCH="aarch64"
 elif [[ $arch == armv6 ]]; then
-    arch=armhf
+    $ARCH="armhf"
 fi
 
 declare REL="${REL:-edge}"
