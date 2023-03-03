@@ -2,10 +2,13 @@ name: Docker CI
 
 on:
   push:
-    branches: [ "master" ]
-    tags: [ '*' ]
+    branches: 
+      - 'master'
+    tags: 
+      - '*'
   pull_request:
-    branches: [ "master" ]
+    branches: 
+      - 'master'
     
 env:
   GHCR_REGISTRY: ghcr.io
@@ -58,6 +61,7 @@ jobs:
           labels: |
             maintainer=Imoize
             org.opencontainers.image.vendor=Imoize
+            org.opencontainers.image.description=Docker Alpine Linux with s6 overlay
           tags: |
             type=ref,event=tag
 
