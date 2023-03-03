@@ -6,13 +6,13 @@
 # Luis Lavena (luislavena).
 
 if [[ ${TARGETARCH}${TARGETVARIANT} == amd64 ]]; then
-    arch=x86_64
-elif [[ ${TARGETARCH}${TARGETVARIANT} == armv7 ]]; then
-    arch=armv7
+    declare arch=x86_64
+elif [[ ${TARGETARCH}${TARGETVARIANT} == linux/arm/v7 ]]; then
+    declare arch=armv7
 elif [[ ${TARGETARCH}${TARGETVARIANT} == arm64 ]]; then
-    arch=aarch64
-elif [[ ${TARGETARCH}${TARGETVARIANT} == armv6 ]]; then
-    arch=armhf
+    declare arch=aarch64
+elif [[ ${TARGETARCH}${TARGETVARIANT} == linux/arm/v6 ]]; then
+    declare arch=armhf
 fi
 
 declare REL="${REL:-edge}"
