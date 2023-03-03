@@ -7,11 +7,11 @@
 
 if [[ ${TARGETARCH}${TARGETVARIANT} == amd64 ]]; then
     declare arch=x86_64
-elif [[ ${TARGETVARIANT} == v7 ]]; then
-    declare arch=armv7
 elif [[ ${TARGETARCH}${TARGETVARIANT} == arm64 ]]; then
     declare arch=aarch64
-elif [[ ${TARGETVARIANT} == v6 ]]; then
+elif [[ $arch == armv7l ]]; then
+    declare arch=armv7
+elif [[ $arch == arm ]]; then
     declare arch=armhf
 fi
 
