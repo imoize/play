@@ -56,7 +56,7 @@ jobs:
             ${{ github.actor }}/${{ env.DEV_IMAGE }}
           flavor: latest=true
           tags: |
-            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{raw}}
 
       - name: Build and push Docker image
         if: ${{ github.ref_type == 'tag' }}
