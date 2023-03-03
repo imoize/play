@@ -15,8 +15,9 @@ elif [[ ${S6_OVERLAY_ARCH} == arm ]]; then
     declare arch=armhf
 fi
 
-declare REL="${REL:-edge}"
+declare REL="${ALPINE_VERSION}"
 declare MIRROR="${MIRROR:-http://dl-cdn.alpinelinux.org/alpine}"
+declare PACKAGES=alpine-baselayout,alpine-keys,apk-tools,busybox,libc-utils,xz
 
 set -eo pipefail; [[ "$TRACE" ]] && set -x
 
