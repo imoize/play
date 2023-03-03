@@ -12,7 +12,7 @@ elif [[ $arch == arm ]]; then
 elif [[ $arch == arm64 ]]; then
     arch=aarch64
 elif [[ $arch == armv7 ]]; then
-    arch=armv7
+    arch=armhf
 fi
 
 declare REL="${REL:-3.17}"
