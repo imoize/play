@@ -65,7 +65,8 @@ ARG PS1="$(whoami)@$(hostname):$(pwd)\\$" \
 
 RUN \
     echo "**** install runtime packages ****" && \
-    apk add --no-cache \
+    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.17/main \
+    alpine-release \
     bash \
     ca-certificates \
     coreutils \
