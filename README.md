@@ -1,8 +1,8 @@
 # Docker baseimage-alpine
+[![Github Build Status](https://img.shields.io/github/actions/workflow/status/imoize/docker-base-alpine/build-prod-ci.yml?color=458837&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=build&logo=github)](https://hub.docker.com/r/imoize/test)
 [![GitHub](https://img.shields.io/static/v1.svg?color=3C79F5&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=imoize&message=GitHub&logo=github)](https://github.com/imoize "view the source for all of our repositories.")
 [![GitHub Package Repository](https://img.shields.io/static/v1.svg?color=3C79F5&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=imoize&message=GitHub%20Package&logo=github)](https://github.com/imoize/test/packages)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sestnact/qloapps.svg?color=3C79F5&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=pulls&logo=docker)](https://hub.docker.com/r/imoize/test)
-
 ## Custom image based on alpine with s6-overlay 
 
 ## Usage
