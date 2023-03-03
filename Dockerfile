@@ -21,7 +21,7 @@ RUN \
     xz
 
 # fetch builder script from gliderlabs
-COPY mkimage-alpine.bash /
+COPY patches/mkimage-alpine.bash /
 RUN \
     chmod +x /mkimage-alpine.bash && \
     ./mkimage-alpine.bash && \
@@ -57,9 +57,7 @@ RUN tar -C /build-out -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz
 FROM scratch
 COPY --from=s6-stage /build-out/ /
 
-LABEL maintainer="brilliant"
-
-ENV PS1="$(whoami)@$(hostname):$(pwd)\\$ " \
+ARG PS1="$(whoami)@$(hostname):$(pwd)\\$" \
     HOME="/root" \
     TERM="xterm" \
     S6_CMD_WAIT_FOR_SERVICES_MAXTIME="0" \
@@ -68,7 +66,6 @@ ENV PS1="$(whoami)@$(hostname):$(pwd)\\$ " \
 RUN \
     echo "**** install runtime packages ****" && \
     apk add --no-cache \
-    alpine-release \
     bash \
     ca-certificates \
     coreutils \
@@ -79,7 +76,7 @@ RUN \
     tzdata && \
     echo "**** create user and make folders ****" && \
     groupmod -g 1000 users && \
-    useradd -u 911 -U -d /data -s /bin/false disty && \
+    useradd -u 911 -U -d /config -s /bin/false disty && \
     usermod -G users disty && \
     mkdir -p \
     /app \
