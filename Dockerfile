@@ -12,7 +12,7 @@ RUN \
     logrotate \
     nano \
     openssl \
-    nginx==${NGINX_VERSION} \
+    nginx-${NGINX_VERSION} \
     nginx-mod-http-brotli==${NGINX_VERSION} \
     nginx-mod-http-cache-purge==${NGINX_VERSION} \
     nginx-mod-http-dav-ext==${NGINX_VERSION} \
