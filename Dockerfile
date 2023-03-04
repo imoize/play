@@ -2,7 +2,6 @@ FROM ghcr.io/imoize/alpine-s6:3.17
 
 ARG TARGETARCH
 ARG TARGETVARIANT
-ARG ARCH="${TARGETARCH}${TARGETVARIANT}"
 ARG NGINX_VERSION
 
 # install packages
@@ -11,7 +10,7 @@ RUN \
   apk add --no-cache --upgrade \
   curl && \
   if [ -z ${NGINX_VERSION+x} ]; then \
-    NGINX_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/edge/main/${ARCH}/APKINDEX.tar.gz" | tar -xz -C /tmp \
+    NGINX_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/edge/main/${TARGETARCH}${TARGETVARIANT}/APKINDEX.tar.gz" | tar -xz -C /tmp \
     && awk '/^P:nginx$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
   fi && \
   apk add --no-cache \
