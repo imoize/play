@@ -57,5 +57,5 @@ RUN \
 # add local files
 COPY src/ /
 
-# ports
+# expose ports
 EXPOSE 80 443
