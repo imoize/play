@@ -1,6 +1,8 @@
 FROM alpine:3.17 as build-stage
 
 ARG TARGETARCH
+ARG TARGETPLATFORM
+ARG TARGETVARIANT
 ARG ALPINE_VERSION="v3.17"
 
 # add required packages
