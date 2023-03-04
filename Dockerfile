@@ -2,19 +2,13 @@ FROM ghcr.io/imoize/alpine-s6:3.17
 
 ARG TARGETARCH
 ARG TARGETVARIANT
-ARG NGINX_VERSION
+ARG NGINX_VERSION="1.22.1"
 
 # install packages
 RUN \
-  echo "**** install packages ****" && \
-  apk add --no-cache \
-  tar \
-  curl && \
-  if [ -z ${NGINX_VERSION+x} ]; then \
-    NGINX_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/v3.17/main/${TARGETARCH}${TARGETVARIANT}/APKINDEX.tar.gz" | tar -Jxpf -C /tmp \
-    && awk '/^P:nginx$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
-  fi && \
-  apk add --no-cache \
+    echo "**** install packages ****" && \
+    apk add --no-cache \
+    curl \
     logrotate \
     nano \
     openssl \
@@ -40,19 +34,19 @@ RUN \
     nginx-mod-stream-geoip==${NGINX_VERSION} \
     nginx-mod-stream-geoip2==${NGINX_VERSION} \
     nginx-vim==${NGINX_VERSION} && \
-  echo "**** set nginx ****" && \
-  echo 'fastcgi_param  HTTP_PROXY         "";' >> /etc/nginx/fastcgi_params && \
-  echo 'fastcgi_param  PATH_INFO          $fastcgi_path_info;' >> /etc/nginx/fastcgi_params && \
-  echo 'fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params && \
-  echo 'fastcgi_param  SERVER_NAME        $host;' >> /etc/nginx/fastcgi_params && \
-  rm -f /etc/nginx/http.d/default.conf && \
-  echo "**** fix logrotate ****" && \
-  sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf && \
-  sed -i 's#/usr/sbin/logrotate /etc/logrotate.conf#/usr/sbin/logrotate /etc/logrotate.conf -s /defaults/log/logrotate.status#g' /etc/periodic/daily/logrotate && \
-  echo '*** clean up ***' && \
-  rm -rf \
-  /tmp/* \
-  /var/cache/apk/*
+    echo "**** set nginx ****" && \
+    echo 'fastcgi_param  HTTP_PROXY         "";' >> /etc/nginx/fastcgi_params && \
+    echo 'fastcgi_param  PATH_INFO          $fastcgi_path_info;' >> /etc/nginx/fastcgi_params && \
+    echo 'fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params && \
+    echo 'fastcgi_param  SERVER_NAME        $host;' >> /etc/nginx/fastcgi_params && \
+    rm -f /etc/nginx/http.d/default.conf && \
+    echo "**** fix logrotate ****" && \
+    sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf && \
+    sed -i 's#/usr/sbin/logrotate /etc/logrotate.conf#/usr/sbin/logrotate /etc/logrotate.conf -s /defaults/log/logrotate.status#g' /etc/periodic/daily/logrotate && \
+    echo '*** clean up ***' && \
+    rm -rf \
+    /tmp/* \
+    /var/cache/apk/*
 
 # add local files
 COPY src/ /
