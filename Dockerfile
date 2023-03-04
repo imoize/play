@@ -13,7 +13,7 @@ RUN \
     tzdata \
     xz && \
     echo "I'm building for $TARGETARCH/$TARGETVARIANT" && \
-    echo "I'm building for ${TARGETPLATFORM}"
+    echo "I'm building for $TARGETPLATFORM"
 
 # build images per arch 
 FROM build-stage AS base-amd64
