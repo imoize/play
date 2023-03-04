@@ -19,7 +19,7 @@ RUN \
 FROM build-stage AS base-amd64
 ARG S6_OVERLAY_ARCH="x86_64"
 ADD patches/* /
-RUN ./patch.sh
+RUN ./script.sh
 
 FROM build-stage AS base-arm64
 
