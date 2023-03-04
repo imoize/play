@@ -1,90 +1,61 @@
-FROM alpine:3.17 as build-stage
+FROM ghcr.io/imoize/alpine-s6:3.17
 
 ARG TARGETARCH
 ARG TARGETVARIANT
-ARG ALPINE_VERSION="v3.17"
+ARG ARCH="${TARGETARCH}${TARGETVARIANT}"
+ARG NGINX_VERSION
 
-# add required packages
+# install packages
 RUN \
-    apk add --no-cache \
-    bash \
-    curl \
-    patch \
-    tar \
-    tzdata \
-    xz
-
-# fetch builder script from gliderlabs
-COPY patches/mkimage-alpine.bash /
-RUN \
-    ./mkimage-alpine.bash && \
-    mkdir /build-out && \
-    tar xf \
-    /rootfs.tar.xz -C \
-    /build-out && \
-    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
-
-# build images per arch 
-FROM build-stage AS base-amd64
-ARG S6_OVERLAY_ARCH="x86_64"
-
-FROM build-stage AS base-arm64
-ARG S6_OVERLAY_ARCH="aarch64"
-
-FROM build-stage AS base-armv7
-ARG S6_OVERLAY_ARCH="armhf"
-
-FROM build-stage AS base-armv6
-ARG S6_OVERLAY_ARCH="arm"
-
-# s6-stage
-FROM base-${TARGETARCH}${TARGETVARIANT} as s6-stage
-
-# set version for s6 overlay
-ARG S6_OVERLAY_VERSION="3.1.4.1"
-
-# add s6 overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C /build-out -Jxpf /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz /tmp
-RUN tar -C /build-out -Jxpf /tmp/s6-overlay-${S6_OVERLAY_ARCH}.tar.xz
-
-# runtime stage
-FROM scratch
-COPY --from=s6-stage /build-out/ /
-
-ARG PS1="$(whoami)@$(hostname):$(pwd)\\$" \
-    HOME="/root" \
-    TERM="xterm" \
-    S6_CMD_WAIT_FOR_SERVICES_MAXTIME="0" \
-    S6_VERBOSITY="2"
-
-RUN \
-    echo "**** install runtime packages ****" && \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.17/main \
-    alpine-release \
-    bash \
-    ca-certificates \
-    coreutils \
-    curl \
-    jq \
-    procps \
-    shadow \
-    tzdata && \
-    echo "**** create user and make folders ****" && \
-    groupmod -g 1000 users && \
-    useradd -u 911 -U -d /config -s /bin/false disty && \
-    usermod -G users disty && \
-    mkdir -p \
-    /app \
-    /config \
-    /defaults && \
-    echo "**** cleanup ****" && \
-    rm -rf \
-    /tmp/* \
-    /var/cache/apk/*
+  echo "**** install packages ****" && \
+  apk add --no-cache --upgrade \
+  curl && \
+  if [ -z ${NGINX_VERSION+x} ]; then \
+    NGINX_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/edge/main/${ARCH}/APKINDEX.tar.gz" | tar -xz -C /tmp \
+    && awk '/^P:nginx$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
+  fi && \
+  apk add --no-cache \
+    logrotate \
+    nano \
+    openssl \
+    nginx==${NGINX_VERSION} \
+    nginx-mod-http-brotli==${NGINX_VERSION} \
+    nginx-mod-http-cache-purge==${NGINX_VERSION} \
+    nginx-mod-http-dav-ext==${NGINX_VERSION} \
+    nginx-mod-http-echo==${NGINX_VERSION} \
+    nginx-mod-http-fancyindex==${NGINX_VERSION} \
+    nginx-mod-http-geoip==${NGINX_VERSION} \
+    nginx-mod-http-geoip2==${NGINX_VERSION} \
+    nginx-mod-http-headers-more==${NGINX_VERSION} \
+    nginx-mod-http-image-filter==${NGINX_VERSION} \
+    nginx-mod-http-nchan==${NGINX_VERSION} \
+    nginx-mod-http-perl==${NGINX_VERSION} \
+    nginx-mod-http-redis2==${NGINX_VERSION} \
+    nginx-mod-http-set-misc==${NGINX_VERSION} \
+    nginx-mod-http-upload-progress==${NGINX_VERSION} \
+    nginx-mod-http-xslt-filter==${NGINX_VERSION} \
+    nginx-mod-mail==${NGINX_VERSION} \
+    nginx-mod-rtmp==${NGINX_VERSION} \
+    nginx-mod-stream==${NGINX_VERSION} \
+    nginx-mod-stream-geoip==${NGINX_VERSION} \
+    nginx-mod-stream-geoip2==${NGINX_VERSION} \
+    nginx-vim==${NGINX_VERSION} && \
+  echo "**** set nginx ****" && \
+  echo 'fastcgi_param  HTTP_PROXY         "";' >> /etc/nginx/fastcgi_params && \
+  echo 'fastcgi_param  PATH_INFO          $fastcgi_path_info;' >> /etc/nginx/fastcgi_params && \
+  echo 'fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;' >> /etc/nginx/fastcgi_params && \
+  echo 'fastcgi_param  SERVER_NAME        $host;' >> /etc/nginx/fastcgi_params && \
+  rm -f /etc/nginx/http.d/default.conf && \
+  echo "**** fix logrotate ****" && \
+  sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf && \
+  sed -i 's#/usr/sbin/logrotate /etc/logrotate.conf#/usr/sbin/logrotate /etc/logrotate.conf -s /defaults/log/logrotate.status#g' /etc/periodic/daily/logrotate && \
+  echo '*** clean up ***' && \
+  rm -rf \
+  /tmp/* \
+  /var/cache/apk/*
 
 # add local files
 COPY src/ /
 
-ENTRYPOINT ["/init"]
+# ports
+EXPOSE 80 443
