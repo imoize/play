@@ -17,18 +17,9 @@ RUN \
 
 # build images per arch 
 FROM build-stage AS base-amd64
-
 ARG S6_OVERLAY_ARCH="x86_64"
-# fetch builder script from gliderlabs
-COPY patches/mkimage-alpine.bash /
-RUN \
-    chmod +x /mkimage-alpine.bash && \
-    ./mkimage-alpine.bash && \
-    mkdir /build-out && \
-    tar xf \
-    /rootfs.tar.xz -C \
-    /build-out && \
-    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
+ADD patches/* /
+RUN ./patch.sh
 
 FROM build-stage AS base-arm64
 
