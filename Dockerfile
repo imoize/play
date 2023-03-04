@@ -7,11 +7,7 @@ ARG TARGETVARIANT
 RUN \
     echo "**** install packages ****" && \
     apk add --no-cache \
-    curl \
-    apache2-utils \
-    git \
     logrotate \
-    nano \
     openssl \
     nginx \
     nginx-mod-http-brotli \
