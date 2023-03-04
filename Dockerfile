@@ -1,7 +1,6 @@
 FROM alpine:3.17 as build-stage
 
 ARG TARGETARCH
-ARG TARGETPLATFORM
 ARG TARGETVARIANT
 ARG ALPINE_VERSION="v3.17"
 
@@ -13,58 +12,30 @@ RUN \
     patch \
     tar \
     tzdata \
-    xz && \
-    echo "I'm building for $TARGETARCH/$TARGETVARIANT" && \
-    echo "I'm building for $TARGETPLATFORM"
+    xz
+
+# fetch builder script from gliderlabs
+COPY patches/mkimage-alpine.bash /
+RUN \
+    ./mkimage-alpine.bash && \
+    mkdir /build-out && \
+    tar xf \
+    /rootfs.tar.xz -C \
+    /build-out && \
+    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 # build images per arch 
 FROM build-stage AS base-amd64
 ARG S6_OVERLAY_ARCH="x86_64"
-ADD patches/* /
-RUN ./script.sh
 
 FROM build-stage AS base-arm64
-
 ARG S6_OVERLAY_ARCH="aarch64"
-# fetch builder script from gliderlabs
-COPY patches/mkimage-alpine.bash /
-RUN \
-    chmod +x /mkimage-alpine.bash && \
-    ./mkimage-alpine.bash && \
-    mkdir /build-out && \
-    tar xf \
-    /rootfs.tar.xz -C \
-    /build-out && \
-    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
-
 
 FROM build-stage AS base-armv7
-
 ARG S6_OVERLAY_ARCH="armhf"
-# fetch builder script from gliderlabs
-COPY patches/mkimage-alpine.bash /
-RUN \
-    chmod +x /mkimage-alpine.bash && \
-    ./mkimage-alpine.bash && \
-    mkdir /build-out && \
-    tar xf \
-    /rootfs.tar.xz -C \
-    /build-out && \
-    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 FROM build-stage AS base-armv6
-
 ARG S6_OVERLAY_ARCH="arm"
-# fetch builder script from gliderlabs
-COPY patches/mkimage-alpine.bash /
-RUN \
-    chmod +x /mkimage-alpine.bash && \
-    ./mkimage-alpine.bash && \
-    mkdir /build-out && \
-    tar xf \
-    /rootfs.tar.xz -C \
-    /build-out && \
-    sed -i -e 's/^root::/root:!:/' //build-out/etc/shadow
 
 # s6-stage
 FROM base-${TARGETARCH}${TARGETVARIANT} as s6-stage
@@ -112,7 +83,6 @@ RUN \
     rm -rf \
     /tmp/* \
     /var/cache/apk/*
-
 
 # add local files
 COPY src/ /
