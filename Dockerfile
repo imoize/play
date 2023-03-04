@@ -7,10 +7,10 @@ ARG NGINX_VERSION
 # install packages
 RUN \
   echo "**** install packages ****" && \
-  apk add --no-cache --upgrade \
+  apk add --no-cache \
   curl && \
   if [ -z ${NGINX_VERSION+x} ]; then \
-    NGINX_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/edge/main/${TARGETARCH}${TARGETVARIANT}/APKINDEX.tar.gz" | tar -xz -C /tmp \
+    NGINX_VERSION=$(curl -sL "http://dl-cdn.alpinelinux.org/alpine/v3.17/main/${TARGETARCH}${TARGETVARIANT}/APKINDEX.tar.gz" | tar -xz -C /tmp \
     && awk '/^P:nginx$/,/V:/' /tmp/APKINDEX | sed -n 2p | sed 's/^V://'); \
   fi && \
   apk add --no-cache \
