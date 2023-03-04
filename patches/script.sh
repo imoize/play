@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 chmod +x /mkimage-alpine.bash && \
 /mkimage-alpine.bash && \
