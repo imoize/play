@@ -1,4 +1,4 @@
-FROM ghcr.io/imoize/alpine-s6:3.17
+FROM imoize/alpine-s6:3.17
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -7,8 +7,11 @@ ARG TARGETVARIANT
 RUN \
     echo "**** install packages ****" && \
     apk add --no-cache \
-    logrotate \
+    git \
+    nano \
     openssl \
+    logrotate \
+    apache2-utils \
     nginx \
     nginx-mod-http-brotli \
     nginx-mod-http-cache-purge \
@@ -39,7 +42,7 @@ RUN \
     rm -f /etc/nginx/http.d/default.conf && \
     echo "**** fix logrotate ****" && \
     sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf && \
-    sed -i 's#/usr/sbin/logrotate /etc/logrotate.conf#/usr/sbin/logrotate /etc/logrotate.conf -s /defaults/log/logrotate.status#g' /etc/periodic/daily/logrotate && \
+    sed -i 's#/usr/sbin/logrotate /etc/logrotate.conf#/usr/sbin/logrotate /etc/logrotate.conf -s /config/log/logrotate.status#g' /etc/periodic/daily/logrotate && \
     echo '*** clean up ***' && \
     rm -rf \
     /tmp/* \
