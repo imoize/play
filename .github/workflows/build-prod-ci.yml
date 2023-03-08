@@ -63,7 +63,7 @@ jobs:
             org.opencontainers.image.vendor=Imoize
             org.opencontainers.image.description=Docker Alpine Linux with s6 overlay
           tags: |
-            type=match,pattern=\d+,group=1
+            type=match,pattern=\d+,group=0
 
       - name: Build and push Docker image
         if: ${{ github.ref_type == 'tag' }}
