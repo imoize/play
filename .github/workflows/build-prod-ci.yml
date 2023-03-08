@@ -75,3 +75,9 @@ jobs:
           push: ${{ github.ref_type == 'tag' }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: tartsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
